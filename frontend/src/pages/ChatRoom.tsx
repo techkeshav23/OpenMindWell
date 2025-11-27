@@ -6,16 +6,18 @@ import {
 } from 'lucide-react'
 import { supabase } from '@/lib/supabase'
 import { useAuthStore } from '@/store/authStore'
-import type { ChatRoom, Message, Profile } from '@/lib/database.types'
+import type { ChatRoom as ChatRoomType, Message, Profile } from '@/lib/database.types'
 import { formatRelativeTime, getAvatarUrl, containsCrisisKeywords } from '@/lib/utils'
 import toast from 'react-hot-toast'
 import CrisisModal from '@/components/CrisisModal'
 
+type MessageWithProfile = Message & { profiles?: Profile | null }
+
 export default function ChatRoom() {
   const { roomId } = useParams<{ roomId: string }>()
   const { profile } = useAuthStore()
-  const [room, setRoom] = useState<ChatRoom | null>(null)
-  const [messages, setMessages] = useState<(Message & { profiles?: Profile })[]>([])
+  const [room, setRoom] = useState<ChatRoomType | null>(null)
+  const [messages, setMessages] = useState<MessageWithProfile[]>([])
   const [newMessage, setNewMessage] = useState('')
   const [loading, setLoading] = useState(true)
   const [sending, setSending] = useState(false)
@@ -55,7 +57,7 @@ export default function ChatRoom() {
     
     const { data, error } = await supabase
       .from('messages')
-      .select('*, profiles(*)')
+      .select('*')
       .eq('room_id', roomId)
       .order('created_at', { ascending: true })
       .limit(100)
@@ -63,7 +65,19 @@ export default function ChatRoom() {
     if (error) {
       console.error('Error loading messages:', error)
     } else {
-      setMessages(data || [])
+      // Fetch profiles separately for each unique user
+      const userIds = [...new Set((data || []).map(m => m.user_id))]
+      const { data: profiles } = await supabase
+        .from('profiles')
+        .select('*')
+        .in('id', userIds)
+      
+      const profileMap = new Map((profiles || []).map(p => [p.id, p]))
+      const messagesWithProfiles = (data || []).map(msg => ({
+        ...msg,
+        profiles: profileMap.get(msg.user_id) || null
+      }))
+      setMessages(messagesWithProfiles)
     }
     setLoading(false)
   }
@@ -77,16 +91,19 @@ export default function ChatRoom() {
         'postgres_changes',
         { event: 'INSERT', schema: 'public', table: 'messages', filter: `room_id=eq.${roomId}` },
         async (payload) => {
-          // Fetch the profile for the new message
-          const { data: newMsg } = await supabase
-            .from('messages')
-            .select('*, profiles(*)')
-            .eq('id', payload.new.id)
+          const newMsgData = payload.new as Message
+          // Fetch profile for the new message
+          const { data: profileData } = await supabase
+            .from('profiles')
+            .select('*')
+            .eq('id', newMsgData.user_id)
             .single()
 
-          if (newMsg) {
-            setMessages((prev) => [...prev, newMsg])
+          const newMsg: MessageWithProfile = {
+            ...newMsgData,
+            profiles: profileData || null
           }
+          setMessages((prev) => [...prev, newMsg])
         }
       )
       .subscribe()

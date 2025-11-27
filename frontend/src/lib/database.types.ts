@@ -6,7 +6,7 @@ export type Json =
   | { [key: string]: Json | undefined }
   | Json[]
 
-export interface Database {
+export type Database = {
   public: {
     Tables: {
       profiles: {
@@ -39,6 +39,7 @@ export interface Database {
           is_online?: boolean
           last_seen?: string | null
         }
+        Relationships: []
       }
       chat_rooms: {
         Row: {
@@ -68,6 +69,7 @@ export interface Database {
           created_at?: string
         }
         Update: {
+          id?: string
           name?: string
           description?: string | null
           topic?: string
@@ -75,8 +77,11 @@ export interface Database {
           color?: string
           is_private?: boolean
           is_active?: boolean
+          created_by?: string | null
           member_count?: number
+          created_at?: string
         }
+        Relationships: []
       }
       messages: {
         Row: {
@@ -96,9 +101,14 @@ export interface Database {
           is_flagged?: boolean
         }
         Update: {
+          id?: string
+          room_id?: string
+          user_id?: string
           content?: string
+          created_at?: string
           is_flagged?: boolean
         }
+        Relationships: []
       }
       journal_entries: {
         Row: {
@@ -122,12 +132,16 @@ export interface Database {
           updated_at?: string
         }
         Update: {
+          id?: string
+          user_id?: string
           title?: string | null
           content?: string
           mood?: number | null
           tags?: string[]
+          created_at?: string
           updated_at?: string
         }
+        Relationships: []
       }
       habits: {
         Row: {
@@ -153,13 +167,17 @@ export interface Database {
           created_at?: string
         }
         Update: {
+          id?: string
+          user_id?: string
           name?: string
           description?: string | null
           emoji?: string
           color?: string
           frequency?: string
           is_active?: boolean
+          created_at?: string
         }
+        Relationships: []
       }
       habit_logs: {
         Row: {
@@ -177,9 +195,13 @@ export interface Database {
           completed_at?: string
         }
         Update: {
+          id?: string
+          habit_id?: string
+          user_id?: string
           date?: string
           completed_at?: string
         }
+        Relationships: []
       }
       mood_entries: {
         Row: {
@@ -201,11 +223,15 @@ export interface Database {
           created_at?: string
         }
         Update: {
+          id?: string
+          user_id?: string
           mood_score?: number
           energy_level?: number
           anxiety_level?: number
           notes?: string | null
+          created_at?: string
         }
+        Relationships: []
       }
     }
     Views: {
@@ -215,6 +241,9 @@ export interface Database {
       [_ in never]: never
     }
     Enums: {
+      [_ in never]: never
+    }
+    CompositeTypes: {
       [_ in never]: never
     }
   }
