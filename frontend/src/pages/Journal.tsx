@@ -136,7 +136,7 @@ export default function Journal() {
   return (
     <div className="space-y-4 md:space-y-6 animate-fade-in">
       {/* Header */}
-      <div className="relative overflow-hidden bg-gradient-to-br from-purple-500 via-violet-600 to-pink-600 rounded-2xl p-4 md:p-6 text-white shadow-xl">
+      <div className="relative overflow-hidden bg-calm-600 rounded-2xl p-4 md:p-6 text-white shadow-xl">
         <div className="absolute inset-0 overflow-hidden">
           <div className="absolute -top-8 -right-8 w-24 h-24 bg-white/10 rounded-full blur-2xl animate-pulse-slow" />
           <div className="absolute -bottom-8 -left-8 w-20 h-20 bg-white/10 rounded-full blur-2xl animate-float" />
@@ -189,9 +189,9 @@ export default function Journal() {
 
           {/* Today's Prompt */}
           {!editingId && (
-            <div className="relative overflow-hidden bg-gradient-to-br from-purple-50 via-violet-50 to-pink-50 
-                          dark:from-purple-900/30 dark:via-violet-900/30 dark:to-pink-900/30 
-                          rounded-lg p-3 md:p-4 border border-purple-100 dark:border-purple-800">
+            <div className="relative overflow-hidden bg-calm-50 
+                          dark:bg-calm-900/30 
+                          rounded-lg p-3 md:p-4 border border-calm-100 dark:border-calm-800">
               <div className="absolute top-0 right-0 w-16 h-16 bg-purple-200/30 rounded-full blur-2xl" />
               <div className="relative z-10">
                 <p className="text-xs text-purple-600 dark:text-purple-400 font-semibold mb-1 flex items-center gap-1.5">
@@ -241,8 +241,8 @@ export default function Journal() {
             <button
               onClick={handleSave}
               disabled={!content.trim()}
-              className="flex-1 px-3 py-2.5 bg-gradient-to-r from-purple-500 to-violet-600 text-white rounded-lg 
-                       hover:from-purple-600 hover:to-violet-700 disabled:opacity-50 disabled:cursor-not-allowed
+              className="flex-1 px-3 py-2.5 bg-calm-600 text-white rounded-lg 
+                       hover:bg-calm-700 disabled:opacity-50 disabled:cursor-not-allowed
                        transition-all duration-300 font-medium shadow-md hover:shadow-lg flex items-center justify-center gap-1.5 text-sm"
             >
               <Save size={16} /> {editingId ? 'Update' : 'Save'}
@@ -335,7 +335,7 @@ function EntryCard({
       <div className="flex items-start justify-between gap-4">
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-3 mb-2">
-            <div className="w-10 h-10 bg-gradient-to-br from-purple-400 to-violet-600 rounded-xl flex items-center justify-center text-white shadow-lg">
+            <div className="w-10 h-10 bg-calm-600 rounded-xl flex items-center justify-center text-white shadow-lg">
               <BookOpen size={18} />
             </div>
             <div>

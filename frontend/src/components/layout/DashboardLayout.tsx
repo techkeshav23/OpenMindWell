@@ -1,8 +1,8 @@
 import { Outlet, NavLink, useNavigate } from 'react-router-dom'
 import { useState, useEffect } from 'react'
 import {
-  Brain, MessageCircle, BookOpen, Target, TrendingUp, Sparkles,
-  Menu, X, Moon, Sun, LogOut, Phone, ChevronLeft, ChevronRight, Home
+  Brain, MessageCircle, BookOpen, Target, TrendingUp, Zap,
+  Menu, X, Moon, Sun, LogOut, Phone, Home
 } from 'lucide-react'
 import { useAuthStore } from '../../store/authStore'
 import { useUIStore } from '../../store/uiStore'
@@ -13,11 +13,11 @@ import toast from 'react-hot-toast'
 
 const navItems = [
   { to: '/app', icon: Home, label: 'Dashboard', end: true },
-  { to: '/app/chat', icon: MessageCircle, label: 'Chat Rooms' },
+  { to: '/app/chat', icon: MessageCircle, label: 'Chat' },
   { to: '/app/journal', icon: BookOpen, label: 'Journal' },
   { to: '/app/habits', icon: Target, label: 'Habits' },
-  { to: '/app/mood', icon: TrendingUp, label: 'Mood Tracker' },
-  { to: '/app/resources', icon: Sparkles, label: 'Resources' },
+  { to: '/app/mood', icon: TrendingUp, label: 'Mood' },
+  { to: '/app/resources', icon: Zap, label: 'Resources' },
 ]
 
 export default function DashboardLayout() {
@@ -36,14 +36,13 @@ export default function DashboardLayout() {
       if (!user) {
         try {
           await signInAnonymously()
-          toast.success('Welcome! You\'re anonymous.')
+          toast.success('Welcome! You are anonymous.')
         } catch (error) {
           toast.error('Failed to connect')
           return
         }
       }
 
-      // Fetch or create profile
       if (user && !profile) {
         const { data: existingProfile } = await supabase
           .from('profiles')
@@ -89,27 +88,25 @@ export default function DashboardLayout() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-gray-50 to-primary-50/30 dark:from-gray-950 dark:via-gray-950 dark:to-gray-900">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950">
       {/* Mobile Header */}
-      <header className="lg:hidden sticky top-0 z-40 bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl border-b border-gray-200/50 dark:border-gray-800/50">
-        <div className="flex items-center justify-between px-4 h-16">
+      <header className="lg:hidden sticky top-0 z-40 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800">
+        <div className="flex items-center justify-between px-4 h-14">
           <button 
             onClick={() => setMobileOpen(!mobileOpen)} 
-            className="p-2.5 rounded-xl bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+            className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
           >
-            {mobileOpen ? <X size={22} /> : <Menu size={22} />}
+            {mobileOpen ? <X size={20} /> : <Menu size={20} />}
           </button>
-          <div className="flex items-center gap-2.5">
-            <div className="w-9 h-9 bg-gradient-to-br from-primary-500 to-primary-600 rounded-xl flex items-center justify-center shadow-lg shadow-primary-500/20">
-              <Brain className="text-white" size={20} />
-            </div>
-            <span className="font-bold text-lg">OpenMindWell</span>
+          <div className="flex items-center gap-2">
+            <img src="/logo.png" alt="OpenMindWell Logo" className="w-7 h-7 rounded-lg object-contain" />
+            <span className="font-semibold text-sm">OpenMindWell</span>
           </div>
           <button 
             onClick={() => setShowCrisis(true)} 
-            className="p-2.5 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-xl shadow-lg shadow-red-500/25 hover:shadow-red-500/40 transition-all"
+            className="p-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
           >
-            <Phone size={20} />
+            <Phone size={16} />
           </button>
         </div>
       </header>
@@ -117,40 +114,33 @@ export default function DashboardLayout() {
       <div className="flex">
         {/* Sidebar - Desktop */}
         <aside className={`hidden lg:flex flex-col fixed top-0 left-0 h-full z-40
-          bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl border-r border-gray-200/50 dark:border-gray-800/50
-          transition-all duration-300 ease-in-out ${sidebarOpen ? 'w-72' : 'w-20'}`}
+          bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800
+          transition-all duration-200 ${sidebarOpen ? 'w-56' : 'w-16'}`}
         >
           {/* Logo */}
-          <div className="flex items-center gap-3 px-5 h-20 border-b border-gray-200/50 dark:border-gray-800/50">
-            <div className="w-10 h-10 bg-gradient-to-br from-primary-500 to-primary-600 rounded-xl flex items-center justify-center shadow-lg shadow-primary-500/20 flex-shrink-0">
-              <Brain className="text-white" size={22} />
-            </div>
+          <div className="flex items-center gap-2 px-4 h-14 border-b border-slate-200 dark:border-slate-800">
+            <img src="/logo.png" alt="OpenMindWell Logo" className="w-8 h-8 rounded-lg object-contain flex-shrink-0" />
             {sidebarOpen && (
-              <span className="font-bold text-xl bg-gradient-to-r from-gray-900 to-gray-600 dark:from-white dark:to-gray-400 bg-clip-text text-transparent">
-                OpenMindWell
-              </span>
+              <span className="font-semibold text-slate-900 dark:text-white">OpenMindWell</span>
             )}
           </div>
 
           {/* Profile */}
           {profile && (
-            <div className={`p-4 border-b border-gray-200/50 dark:border-gray-800/50 ${!sidebarOpen && 'flex justify-center'}`}>
-              <div className={`flex items-center gap-3 ${sidebarOpen ? 'p-3 bg-gradient-to-r from-gray-100 to-gray-50 dark:from-gray-800 dark:to-gray-800/50 rounded-2xl' : 'flex-col'}`}>
-                <div className="relative">
+            <div className={`p-3 border-b border-slate-200 dark:border-slate-800 ${!sidebarOpen && 'flex justify-center'}`}>
+              <div className={`flex items-center gap-2 ${sidebarOpen ? 'p-2 bg-slate-50 dark:bg-slate-800 rounded-lg' : ''}`}>
+                <div className="relative flex-shrink-0">
                   <img
                     src={getAvatarUrl(profile.avatar_seed)}
                     alt="Avatar"
-                    className="w-11 h-11 rounded-xl bg-gray-100 ring-2 ring-primary-500/20"
+                    className="w-8 h-8 rounded-lg bg-slate-100"
                   />
-                  <span className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-green-500 rounded-full border-2 border-white dark:border-gray-800"></span>
+                  <span className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 bg-green-500 rounded-full border-2 border-white dark:border-slate-900"></span>
                 </div>
                 {sidebarOpen && (
-                  <div className="flex-1 min-w-0">
-                    <p className="font-semibold text-sm truncate">{profile.username}</p>
-                    <p className="text-xs text-gray-500 flex items-center gap-1">
-                      <span className="w-1.5 h-1.5 bg-green-500 rounded-full"></span>
-                      Anonymous
-                    </p>
+                  <div className="min-w-0">
+                    <p className="text-sm font-medium text-slate-900 dark:text-white truncate">{profile.username}</p>
+                    <p className="text-xs text-slate-500">Anonymous</p>
                   </div>
                 )}
               </div>
@@ -158,65 +148,65 @@ export default function DashboardLayout() {
           )}
 
           {/* Nav */}
-          <nav className="flex-1 p-4 space-y-1.5 overflow-y-auto">
+          <nav className="flex-1 p-2 space-y-1 overflow-y-auto">
             {navItems.map((item) => (
               <NavLink
                 key={item.to}
                 to={item.to}
                 end={item.end}
                 className={({ isActive }) => `
-                  group flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200
+                  flex items-center gap-2 px-3 py-2 rounded-lg transition-colors text-sm
                   ${isActive 
-                    ? 'bg-gradient-to-r from-primary-500 to-primary-600 text-white shadow-lg shadow-primary-500/25' 
-                    : 'hover:bg-gray-100 dark:hover:bg-gray-800/70 text-gray-700 dark:text-gray-300'}
-                  ${!sidebarOpen && 'justify-center px-3'}
+                    ? 'bg-slate-900 dark:bg-white text-white dark:text-slate-900' 
+                    : 'hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400'}
+                  ${!sidebarOpen && 'justify-center px-2'}
                 `}
               >
-                <item.icon size={20} className={`flex-shrink-0`} />
+                <item.icon size={18} className="flex-shrink-0" />
                 {sidebarOpen && <span className="font-medium">{item.label}</span>}
               </NavLink>
             ))}
           </nav>
 
           {/* Bottom Actions */}
-          <div className="p-4 border-t border-gray-200/50 dark:border-gray-800/50 space-y-2">
+          <div className="p-2 border-t border-slate-200 dark:border-slate-800 space-y-1">
             <button
               onClick={() => setShowCrisis(true)}
-              className={`flex items-center gap-3 px-4 py-3 rounded-xl w-full
-                bg-gradient-to-r from-red-50 to-red-100 dark:from-red-900/20 dark:to-red-900/10 
-                text-red-600 dark:text-red-400 hover:from-red-100 hover:to-red-100 dark:hover:from-red-900/30 dark:hover:to-red-900/20
-                border border-red-200/50 dark:border-red-800/30 transition-all duration-200
-                ${!sidebarOpen && 'justify-center px-3'}`}
+              className={`flex items-center gap-2 px-3 py-2 rounded-lg w-full
+                bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 
+                hover:bg-red-100 dark:hover:bg-red-900/30 transition-colors text-sm
+                ${!sidebarOpen && 'justify-center px-2'}`}
             >
-              <Phone size={20} />
+              <Phone size={18} />
               {sidebarOpen && <span className="font-medium">Crisis Help</span>}
             </button>
 
-            <div className="flex gap-2">
+            <div className={`flex gap-1 ${!sidebarOpen && 'flex-col'}`}>
               <button
                 onClick={toggleDarkMode}
-                className={`flex items-center justify-center gap-3 p-3 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors
+                className={`flex items-center justify-center p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors
                   ${sidebarOpen ? 'flex-1' : 'w-full'}`}
               >
-                {darkMode ? <Sun size={20} className="text-yellow-500" /> : <Moon size={20} className="text-blue-500" />}
+                {darkMode ? <Sun size={18} className="text-amber-500" /> : <Moon size={18} className="text-slate-500" />}
               </button>
 
               <button
                 onClick={handleSignOut}
-                className={`flex items-center justify-center gap-3 p-3 rounded-xl hover:bg-red-50 dark:hover:bg-red-900/20 text-red-500 transition-colors
-                  ${sidebarOpen ? 'flex-1' : 'hidden'}`}
+                className={`flex items-center justify-center p-2 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 text-red-500 transition-colors
+                  ${sidebarOpen ? 'flex-1' : 'w-full'}`}
               >
-                <LogOut size={20} />
+                <LogOut size={18} />
               </button>
             </div>
 
             <button
               onClick={() => setSidebarOpen(!sidebarOpen)}
-              className={`flex items-center gap-3 px-4 py-3 rounded-xl w-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors
-                ${!sidebarOpen && 'justify-center px-3'}`}
+              className={`hidden lg:flex items-center gap-2 px-3 py-2 rounded-lg w-full 
+                hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors text-sm text-slate-500
+                ${!sidebarOpen && 'justify-center px-2'}`}
             >
-              {sidebarOpen ? <ChevronLeft size={20} /> : <ChevronRight size={20} />}
-              {sidebarOpen && <span className="text-sm text-gray-500">Collapse sidebar</span>}
+              <Menu size={18} />
+              {sidebarOpen && <span>Collapse</span>}
             </button>
           </div>
         </aside>
@@ -224,34 +214,29 @@ export default function DashboardLayout() {
         {/* Mobile Menu */}
         {mobileOpen && (
           <div className="lg:hidden fixed inset-0 z-30">
-            <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setMobileOpen(false)} />
-            <div className="absolute left-0 top-0 h-full w-80 bg-white dark:bg-gray-900 shadow-2xl" onClick={e => e.stopPropagation()}>
-              <div className="p-5">
+            <div className="absolute inset-0 bg-slate-900/50" onClick={() => setMobileOpen(false)} />
+            <div className="absolute left-0 top-0 h-full w-64 bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800" onClick={e => e.stopPropagation()}>
+              <div className="p-4">
                 {/* Mobile Logo */}
-                <div className="flex items-center gap-3 mb-6">
-                  <div className="w-10 h-10 bg-gradient-to-br from-primary-500 to-primary-600 rounded-xl flex items-center justify-center shadow-lg shadow-primary-500/20">
-                    <Brain className="text-white" size={22} />
-                  </div>
-                  <span className="font-bold text-xl">OpenMindWell</span>
+                <div className="flex items-center gap-2 mb-4">
+                  <img src="/logo.png" alt="OpenMindWell Logo" className="w-8 h-8 rounded-lg object-contain" />
+                  <span className="font-semibold">OpenMindWell</span>
                 </div>
 
                 {profile && (
-                  <div className="flex items-center gap-3 mb-6 p-4 bg-gradient-to-r from-gray-100 to-gray-50 dark:from-gray-800 dark:to-gray-800/50 rounded-2xl">
+                  <div className="flex items-center gap-2 mb-4 p-2 bg-slate-50 dark:bg-slate-800 rounded-lg">
                     <div className="relative">
-                      <img src={getAvatarUrl(profile.avatar_seed)} alt="" className="w-12 h-12 rounded-xl ring-2 ring-primary-500/20" />
-                      <span className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-green-500 rounded-full border-2 border-white dark:border-gray-800"></span>
+                      <img src={getAvatarUrl(profile.avatar_seed)} alt="" className="w-8 h-8 rounded-lg" />
+                      <span className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 bg-green-500 rounded-full border-2 border-white dark:border-slate-900"></span>
                     </div>
                     <div>
-                      <p className="font-semibold">{profile.username}</p>
-                      <p className="text-xs text-gray-500 flex items-center gap-1">
-                        <span className="w-1.5 h-1.5 bg-green-500 rounded-full"></span>
-                        Anonymous User
-                      </p>
+                      <p className="text-sm font-medium">{profile.username}</p>
+                      <p className="text-xs text-slate-500">Anonymous</p>
                     </div>
                   </div>
                 )}
                 
-                <nav className="space-y-1.5">
+                <nav className="space-y-1">
                   {navItems.map((item) => (
                     <NavLink
                       key={item.to}
@@ -259,43 +244,42 @@ export default function DashboardLayout() {
                       end={item.end}
                       onClick={() => setMobileOpen(false)}
                       className={({ isActive }) => `
-                        flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200
+                        flex items-center gap-2 px-3 py-2 rounded-lg transition-colors text-sm
                         ${isActive 
-                          ? 'bg-gradient-to-r from-primary-500 to-primary-600 text-white shadow-lg shadow-primary-500/25' 
-                          : 'hover:bg-gray-100 dark:hover:bg-gray-800'}
+                          ? 'bg-slate-900 dark:bg-white text-white dark:text-slate-900' 
+                          : 'hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400'}
                       `}
                     >
-                      <item.icon size={20} />
+                      <item.icon size={18} />
                       <span className="font-medium">{item.label}</span>
                     </NavLink>
                   ))}
                 </nav>
 
-                <div className="mt-6 pt-6 border-t border-gray-200 dark:border-gray-800 space-y-2">
+                <div className="mt-4 pt-4 border-t border-slate-200 dark:border-slate-800 space-y-1">
                   <button
                     onClick={() => { setShowCrisis(true); setMobileOpen(false); }}
-                    className="flex items-center gap-3 px-4 py-3 rounded-xl w-full
-                      bg-gradient-to-r from-red-50 to-red-100 dark:from-red-900/20 dark:to-red-900/10 
-                      text-red-600 dark:text-red-400 border border-red-200/50 dark:border-red-800/30"
+                    className="flex items-center gap-2 px-3 py-2 rounded-lg w-full text-sm
+                      bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400"
                   >
-                    <Phone size={20} />
+                    <Phone size={18} />
                     <span className="font-medium">Crisis Help</span>
                   </button>
                   
-                  <div className="flex gap-2">
+                  <div className="flex gap-1">
                     <button
                       onClick={toggleDarkMode}
-                      className="flex-1 flex items-center justify-center gap-2 p-3 rounded-xl bg-gray-100 dark:bg-gray-800"
+                      className="flex-1 flex items-center justify-center gap-2 p-2 rounded-lg bg-slate-100 dark:bg-slate-800 text-sm"
                     >
-                      {darkMode ? <Sun size={20} className="text-yellow-500" /> : <Moon size={20} className="text-blue-500" />}
-                      <span className="text-sm">{darkMode ? 'Light' : 'Dark'}</span>
+                      {darkMode ? <Sun size={16} className="text-amber-500" /> : <Moon size={16} className="text-slate-500" />}
+                      <span>{darkMode ? 'Light' : 'Dark'}</span>
                     </button>
                     <button
                       onClick={() => { handleSignOut(); setMobileOpen(false); }}
-                      className="flex-1 flex items-center justify-center gap-2 p-3 rounded-xl bg-red-50 dark:bg-red-900/20 text-red-500"
+                      className="flex-1 flex items-center justify-center gap-2 p-2 rounded-lg bg-red-50 dark:bg-red-900/20 text-red-500 text-sm"
                     >
-                      <LogOut size={20} />
-                      <span className="text-sm">Sign Out</span>
+                      <LogOut size={16} />
+                      <span>Sign Out</span>
                     </button>
                   </div>
                 </div>
@@ -305,8 +289,8 @@ export default function DashboardLayout() {
         )}
 
         {/* Main Content */}
-        <main className={`flex-1 min-h-screen transition-all duration-300 ease-in-out ${sidebarOpen ? 'lg:ml-72' : 'lg:ml-20'}`}>
-          <div className="p-4 md:p-6 lg:p-8 max-w-7xl mx-auto">
+        <main className={`flex-1 min-h-screen transition-all duration-200 ${sidebarOpen ? 'lg:ml-56' : 'lg:ml-16'}`}>
+          <div className="p-4 md:p-6 max-w-6xl mx-auto">
             <Outlet />
           </div>
         </main>

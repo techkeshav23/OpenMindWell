@@ -81,7 +81,7 @@ export function Avatar({ src, name, size = 'md', className }: AvatarProps) {
   return (
     <div
       className={cn(
-        'rounded-full bg-gradient-to-br from-primary-400 to-primary-600 flex items-center justify-center text-white font-medium',
+        'rounded-full bg-primary-600 flex items-center justify-center text-white font-medium',
         sizes[size],
         className
       )}
@@ -179,8 +179,8 @@ export function Progress({
       )}>
         <div
           className={cn(
-            'h-full bg-gradient-to-r rounded-full transition-all duration-500 ease-out',
-            colors[color]
+            'h-full rounded-full transition-all duration-500 ease-out',
+            colors[color].replace('from-', 'bg-').replace(/to-\S+/, '')
           )}
           style={{ width: `${percentage}%` }}
         />

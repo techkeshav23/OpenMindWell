@@ -10,12 +10,12 @@ import type { ChatRoom } from '@/lib/database.types'
 import { formatRelativeTime } from '@/lib/utils'
 
 const ROOM_CATEGORIES = [
-  { id: 'all', label: 'All Rooms', icon: Globe, color: 'from-gray-500 to-gray-600' },
-  { id: 'anxiety', label: 'Anxiety', icon: Heart, color: 'from-purple-500 to-violet-600' },
-  { id: 'depression', label: 'Depression', icon: MessageCircle, color: 'from-blue-500 to-indigo-600' },
-  { id: 'stress', label: 'Stress', icon: Sparkles, color: 'from-orange-500 to-red-600' },
-  { id: 'relationships', label: 'Relationships', icon: Users, color: 'from-pink-500 to-rose-600' },
-  { id: 'general', label: 'General', icon: MessageCircle, color: 'from-primary-500 to-emerald-600' },
+  { id: 'all', label: 'All Rooms', icon: Globe, color: 'bg-gray-600' },
+  { id: 'anxiety', label: 'Anxiety', icon: Heart, color: 'bg-calm-600' },
+  { id: 'depression', label: 'Depression', icon: MessageCircle, color: 'bg-primary-600' },
+  { id: 'stress', label: 'Stress', icon: Sparkles, color: 'bg-orange-600' },
+  { id: 'relationships', label: 'Relationships', icon: Users, color: 'bg-pink-600' },
+  { id: 'general', label: 'General', icon: MessageCircle, color: 'bg-accent-600' },
 ]
 
 export default function ChatRooms() {
@@ -57,7 +57,7 @@ export default function ChatRooms() {
   return (
     <div className="space-y-3 sm:space-y-6 animate-fade-in">
       {/* Header */}
-      <div className="relative overflow-hidden bg-gradient-to-br from-blue-500 via-indigo-600 to-purple-600 rounded-xl sm:rounded-2xl p-3 sm:p-6 text-white shadow-xl">
+      <div className="relative overflow-hidden bg-primary-600 rounded-xl sm:rounded-2xl p-3 sm:p-6 text-white shadow-xl">
         <div className="absolute inset-0 overflow-hidden">
           <div className="absolute -top-8 -right-8 w-20 sm:w-32 h-20 sm:h-32 bg-white/10 rounded-full blur-2xl animate-pulse-slow" />
           <div className="absolute -bottom-8 -left-8 w-16 sm:w-28 h-16 sm:h-28 bg-white/10 rounded-full blur-2xl animate-float" />
@@ -109,7 +109,7 @@ export default function ChatRooms() {
                 onClick={() => setCategory(cat.id)}
                 className={`flex items-center gap-1 px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg whitespace-nowrap transition-all duration-200 text-xs sm:text-sm font-medium flex-shrink-0 ${
                   category === cat.id
-                    ? `bg-gradient-to-r ${cat.color} text-white shadow-md`
+                    ? `${cat.color.replace('from-', 'bg-').replace(/to-\S+/, '')} text-white shadow-md`
                     : 'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600'
                 }`}
               >
@@ -170,7 +170,8 @@ export default function ChatRooms() {
 }
 
 function RoomCard({ room, index }: { room: ChatRoom; index: number }) {
-  const categoryColor = ROOM_CATEGORIES.find(c => c.id === room.topic)?.color || 'from-primary-500 to-emerald-600'
+  const category = ROOM_CATEGORIES.find(c => c.id === room.topic) || ROOM_CATEGORIES[5]
+  const CategoryIcon = category.icon
   
   return (
     <Link
@@ -182,13 +183,9 @@ function RoomCard({ room, index }: { room: ChatRoom; index: number }) {
       {/* Header */}
       <div className="flex items-start justify-between mb-2 sm:mb-3">
         <div className="flex items-center gap-2 sm:gap-3">
-          <div className={`w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br ${categoryColor} rounded-lg sm:rounded-xl flex items-center justify-center 
+          <div className={`w-8 h-8 sm:w-10 sm:h-10 ${category.color} rounded-lg sm:rounded-xl flex items-center justify-center 
                          shadow-md group-hover:scale-105 transition-transform duration-300`}>
-            {room.is_private ? (
-              <Lock className="text-white w-4 h-4 sm:w-[18px] sm:h-[18px]" />
-            ) : (
-              <Globe className="text-white w-4 h-4 sm:w-[18px] sm:h-[18px]" />
-            )}
+            <CategoryIcon className="text-white w-4 h-4 sm:w-[18px] sm:h-[18px]" />
           </div>
           <span className="text-[10px] sm:text-xs px-2 sm:px-2.5 py-0.5 sm:py-1 bg-gray-100 dark:bg-gray-700 rounded-full capitalize font-medium">
             {room.topic || 'general'}
@@ -214,7 +211,7 @@ function RoomCard({ room, index }: { room: ChatRoom; index: number }) {
         <span className="flex items-center gap-1.5 sm:gap-2 text-gray-500">
           <div className="flex -space-x-1.5 sm:-space-x-2">
             {[...Array(Math.min(3, room.member_count || 0))].map((_, i) => (
-              <div key={i} className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-gradient-to-br from-primary-400 to-primary-600 
+              <div key={i} className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-primary-600 
                                     border-2 border-white dark:border-gray-800 flex items-center justify-center text-[8px] sm:text-[10px] text-white">
                 {String.fromCharCode(65 + i)}
               </div>
@@ -269,7 +266,7 @@ function CreateRoomModal({ onClose, onCreated }: { onClose: () => void; onCreate
                     max-h-[85vh] overflow-y-auto overscroll-contain">
         {/* Header */}
         <div className="flex items-center gap-2 sm:gap-3 mb-4">
-          <div className="w-9 h-9 sm:w-10 sm:h-10 bg-gradient-to-br from-primary-500 to-emerald-600 rounded-lg sm:rounded-xl 
+          <div className="w-9 h-9 sm:w-10 sm:h-10 bg-accent-600 rounded-lg sm:rounded-xl 
                         flex items-center justify-center shadow-lg flex-shrink-0">
             <Plus className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
           </div>
@@ -360,8 +357,8 @@ function CreateRoomModal({ onClose, onCreated }: { onClose: () => void; onCreate
             <button
               type="submit"
               disabled={loading || !name.trim()}
-              className="flex-1 px-4 py-2 sm:py-2.5 bg-gradient-to-r from-primary-500 to-primary-600 text-white rounded-lg 
-                       hover:from-primary-600 hover:to-primary-700 active:from-primary-700 active:to-primary-800 disabled:opacity-50 disabled:cursor-not-allowed
+              className="flex-1 px-4 py-2 sm:py-2.5 bg-accent-600 text-white rounded-lg 
+                       hover:bg-accent-700 active:bg-accent-800 disabled:opacity-50 disabled:cursor-not-allowed
                        transition-all duration-300 font-medium shadow-md text-sm"
             >
               {loading ? (

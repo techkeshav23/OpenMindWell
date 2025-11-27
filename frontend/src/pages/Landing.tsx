@@ -1,97 +1,125 @@
 import { Link, useNavigate } from 'react-router-dom'
-import { 
-  Brain, MessageCircle, BookOpen, Target, Heart, Shield, 
-  Sparkles, ArrowRight, Moon, Sun, Star,
-  Lock, ChevronRight
+import {
+  Brain,
+  MessageCircle,
+  BookOpen,
+  Target,
+  Heart,
+  Shield,
+  ArrowRight,
+  Moon,
+  Sun,
+  Lock,
+  TrendingUp,
+  Zap
 } from 'lucide-react'
 import { useAuthStore } from '@/store/authStore'
 import { useUIStore } from '@/store/uiStore'
 import { signInAnonymously } from '@/lib/supabase'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import toast from 'react-hot-toast'
 
 const features = [
   {
     icon: MessageCircle,
-    title: 'Anonymous Peer Support',
-    desc: 'Connect with others who understand in safe, topic-based chat rooms.',
-    gradient: 'from-blue-500 to-cyan-500',
-    shadow: 'shadow-blue-500/25',
+    title: 'Peer Support',
+    desc: 'Connect anonymously in topic-based chat rooms.',
+    image: 'https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=800&auto=format&fit=crop&q=80'
   },
   {
     icon: BookOpen,
-    title: 'Private Journaling',
-    desc: 'Express your thoughts freely in a secure, encrypted personal journal.',
-    gradient: 'from-purple-500 to-pink-500',
-    shadow: 'shadow-purple-500/25',
+    title: 'Private Journal',
+    desc: 'Secure, encrypted personal journaling.',
+    image: 'https://images.unsplash.com/photo-1455390582262-044cdead277a?w=800&auto=format&fit=crop&q=80'
   },
   {
     icon: Target,
     title: 'Habit Tracking',
-    desc: 'Build healthy routines with visual tracking and streak motivation.',
-    gradient: 'from-green-500 to-emerald-500',
-    shadow: 'shadow-green-500/25',
+    desc: 'Build healthy routines with visual tracking.',
+    image: 'https://images.unsplash.com/photo-1484480974693-6ca0a78fb36b?w=800&auto=format&fit=crop&q=80'
   },
   {
-    icon: Brain,
+    icon: TrendingUp,
     title: 'Mood Insights',
-    desc: 'Track emotional patterns and discover what affects your wellbeing.',
-    gradient: 'from-orange-500 to-amber-500',
-    shadow: 'shadow-orange-500/25',
+    desc: 'Track patterns and emotional wellbeing.',
+    image: 'https://images.unsplash.com/photo-1509909756405-be0199881695?w=800&auto=format&fit=crop&q=80'
   },
   {
     icon: Shield,
     title: 'Crisis Resources',
-    desc: 'One-click access to helplines when you need support the most.',
-    gradient: 'from-red-500 to-rose-500',
-    shadow: 'shadow-red-500/25',
+    desc: 'One-click access to helplines.',
+    image: 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=800&auto=format&fit=crop&q=80'
   },
   {
-    icon: Sparkles,
+    icon: Zap,
     title: 'Wellness Tips',
-    desc: 'Get personalized suggestions based on your mood and activities.',
-    gradient: 'from-teal-500 to-cyan-500',
-    shadow: 'shadow-teal-500/25',
+    desc: 'Personalized suggestions for you.',
+    image: 'https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=800&auto=format&fit=crop&q=80'
   },
 ]
 
 const stats = [
-  { value: '100%', label: 'Free Forever' },
-  { value: '0', label: 'Data Collected' },
-  { value: '24/7', label: 'Available' },
-  { value: '∞', label: 'Anonymous' },
+  { value: '100%', label: 'Free access to tools' },
+  { value: '0 trackers', label: 'Privacy-first platform' },
+  { value: '24/7', label: 'Peer rooms online' },
+  { value: '4 pillars', label: 'Chat | Mood | Habits | Help' },
 ]
 
-const testimonials = [
+const navLinks = [
+  { label: 'Home', href: '#home' },
+  { label: 'About', href: '#about' },
+  { label: 'Features', href: '#features' },
+  { label: 'Resources', href: '#resources' },
+  { label: 'Contact', href: '#contact' },
+]
+
+const resourceHighlights = [
   {
-    text: "This app helped me through my darkest days. The anonymous chat rooms made me feel less alone.",
-    author: "Anonymous User",
-    role: "Community Member"
+    title: 'Crisis-first routing',
+    desc: 'Tap once to surface helplines, local resources, and safety plans personalized to your region.',
+    tag: 'Emergency ready'
   },
   {
-    text: "Finally, a mental health app that doesn't require my email or track my data. Pure support.",
-    author: "Anonymous User", 
-    role: "Daily User"
+    title: 'Self-guided rituals',
+    desc: 'Layer mood logs, micro-journals, and habit loops into guided flows that adapt with you.',
+    tag: 'Guided journeys'
   },
   {
-    text: "The habit tracker and journal combo has genuinely improved my daily routine and mental clarity.",
-    author: "Anonymous User",
-    role: "6-month User"
-  }
+    title: 'Transparent privacy',
+    desc: 'No trackers, no ads, no inbox spam. Your anonymous identity lives only on your device.',
+    tag: 'Zero data kept'
+  },
 ]
 
 export default function Landing() {
   const { darkMode, toggleDarkMode } = useUIStore()
   const { setUser, setLoading } = useAuthStore()
   const [isSigningIn, setIsSigningIn] = useState(false)
-  const [currentTestimonial, setCurrentTestimonial] = useState(0)
+  const [featuresVisible, setFeaturesVisible] = useState(false)
+  const featuresRef = useRef<HTMLDivElement>(null)
   const navigate = useNavigate()
 
   useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentTestimonial((prev) => (prev + 1) % testimonials.length)
-    }, 5000)
-    return () => clearInterval(timer)
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setFeaturesVisible(true)
+          }
+        })
+      },
+      { threshold: 0.1 }
+    )
+
+    if (featuresRef.current) {
+      observer.observe(featuresRef.current)
+    }
+
+    return () => {
+      if (featuresRef.current) {
+        observer.unobserve(featuresRef.current)
+      }
+    }
   }, [])
 
   const handleGetStarted = async () => {
@@ -101,15 +129,7 @@ export default function Landing() {
       const { user } = await signInAnonymously()
       if (!user) throw new Error('Failed to create anonymous account')
       setUser(user)
-      // Profile will be created by database trigger or we can create it here
-      toast.success('Welcome! Your anonymous account is ready.', {
-        icon: '💚',
-        style: {
-          borderRadius: '12px',
-          background: '#10b981',
-          color: '#fff',
-        },
-      })
+      toast.success('Welcome! Your anonymous account is ready.')
       navigate('/app')
     } catch (err: unknown) {
       toast.error(err instanceof Error ? err.message : 'Failed to create account')
@@ -120,288 +140,317 @@ export default function Landing() {
   }
 
   return (
-    <div className="min-h-screen bg-white dark:bg-gray-950 overflow-hidden">
-      {/* Animated Background Blobs */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-primary-400/30 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-blob" />
-        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-purple-400/30 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-blob animation-delay-2000" />
-        <div className="absolute top-1/2 left-1/2 w-80 h-80 bg-pink-400/30 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-blob animation-delay-4000" />
-      </div>
-
-      {/* Header */}
-      <header className="relative z-10 container mx-auto px-4 py-6">
-        <nav className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-gradient-to-br from-primary-500 to-primary-600 rounded-xl flex items-center justify-center shadow-lg shadow-primary-500/30">
-              <Brain className="text-white" size={24} />
-            </div>
-            <span className="text-xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 dark:from-white dark:to-gray-400 bg-clip-text text-transparent">
-              OpenMindWell
-            </span>
-          </div>
-          <div className="flex items-center gap-3">
-            <button
-              onClick={toggleDarkMode}
-              className="p-2.5 rounded-xl bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-all duration-200"
-            >
-              {darkMode ? <Sun size={20} className="text-yellow-500" /> : <Moon size={20} className="text-gray-600" />}
-            </button>
-            <Link
-              to="/app"
-              className="hidden sm:flex items-center gap-2 px-5 py-2.5 bg-gray-900 dark:bg-white text-white dark:text-gray-900 rounded-xl font-semibold hover:opacity-90 transition-all duration-200"
-            >
-              Open App <ChevronRight size={18} />
-            </Link>
-          </div>
-        </nav>
-      </header>
-
-      {/* Hero Section */}
-      <section className="relative z-10 container mx-auto px-4 pt-16 pb-24 md:pt-24 md:pb-32">
-        <div className="max-w-4xl mx-auto text-center">
-          {/* Badge */}
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary-50 dark:bg-primary-900/30 border border-primary-200 dark:border-primary-800 rounded-full mb-8">
-            <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-primary-500"></span>
-            </span>
-            <span className="text-sm font-medium text-primary-700 dark:text-primary-300">
-              Free & Anonymous Mental Health Support
-            </span>
-          </div>
-          
-          {/* Main Heading */}
-          <h1 className="text-5xl md:text-7xl font-extrabold leading-tight mb-6">
-            <span className="bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 dark:from-white dark:via-gray-200 dark:to-white bg-clip-text text-transparent">
-              Your Safe Space for
-            </span>
-            <br />
-            <span className="bg-gradient-to-r from-primary-500 via-purple-500 to-pink-500 bg-clip-text text-transparent">
-              Mental Wellness
-            </span>
-          </h1>
-          
-          {/* Subheading */}
-          <p className="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto mb-10 leading-relaxed">
-            Connect anonymously with peers, track your mood, build healthy habits, 
-            and access crisis resources — all in one beautiful, private space.
-          </p>
-
-          {/* CTA Buttons */}
-          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
-            <button
-              onClick={handleGetStarted}
-              disabled={isSigningIn}
-              className="group px-8 py-4 bg-gradient-to-r from-primary-500 to-primary-600 text-white rounded-2xl text-lg font-bold 
-                         hover:from-primary-600 hover:to-primary-700 transition-all duration-300 
-                         shadow-2xl shadow-primary-500/30 hover:shadow-primary-500/40 hover:scale-[1.02]
-                         flex items-center justify-center gap-3 disabled:opacity-70"
-            >
-              {isSigningIn ? (
-                <>
-                  <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                  Creating Account...
-                </>
-              ) : (
-                <>
-                  Get Started Free
-                  <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
-                </>
-              )}
-            </button>
-            <a
-              href="https://github.com/yourusername/openmindwell"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="px-8 py-4 bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 rounded-2xl text-lg 
-                         font-bold hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-300 hover:scale-[1.02]
-                         flex items-center justify-center gap-2"
-            >
-              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
-              View on GitHub
-            </a>
-          </div>
-
-          {/* Trust Badges */}
-          <div className="flex flex-wrap items-center justify-center gap-6 text-sm">
-            <div className="flex items-center gap-2 text-gray-600 dark:text-gray-400">
-              <div className="w-8 h-8 bg-green-100 dark:bg-green-900/30 rounded-lg flex items-center justify-center">
-                <Lock size={16} className="text-green-600" />
+    <div className="min-h-screen bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100">
+      <div className="relative overflow-hidden hero-shell">
+        <div className="hero-glow" aria-hidden="true" />
+        <div className="relative z-10 max-w-6xl mx-auto px-4 md:px-6">
+          <header className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between py-10">
+            <div className="flex items-center gap-3">
+              <img src="/logo.png" alt="OpenMindWell Logo" className="h-10 w-10 rounded-2xl object-contain" />
+              <div>
+                <p className="text-xs uppercase tracking-[0.3em] text-slate-500 dark:text-slate-400">OpenMind</p>
+                <p className="text-lg font-semibold text-slate-900 dark:text-white">OpenMindWell</p>
               </div>
-              <span>No sign-up required</span>
             </div>
-            <div className="flex items-center gap-2 text-gray-600 dark:text-gray-400">
-              <div className="w-8 h-8 bg-red-100 dark:bg-red-900/30 rounded-lg flex items-center justify-center">
-                <Heart size={16} className="text-red-500" />
+            <nav className="flex items-center justify-between gap-3">
+              <div className="hidden md:flex items-center gap-6 bg-white/80 border border-slate-200 rounded-full px-8 py-2 text-sm text-slate-600 shadow-sm backdrop-blur dark:bg-slate-800/80 dark:border-slate-700 dark:text-slate-300">
+                {navLinks.map(link => (
+                  <a key={link.label} href={link.href} className="hover:text-slate-900 dark:hover:text-white transition-colors">
+                    {link.label}
+                  </a>
+                ))}
               </div>
-              <span>100% Free forever</span>
-            </div>
-            <div className="flex items-center gap-2 text-gray-600 dark:text-gray-400">
-              <div className="w-8 h-8 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center">
-                <Shield size={16} className="text-blue-600" />
-              </div>
-              <span>Privacy-first</span>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Stats Section */}
-      <section className="relative z-10 py-16 bg-gray-50 dark:bg-gray-900/50">
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-            {stats.map((stat, index) => (
-              <div key={index} className="text-center">
-                <div className="text-4xl md:text-5xl font-extrabold bg-gradient-to-r from-primary-500 to-purple-500 bg-clip-text text-transparent mb-2">
-                  {stat.value}
-                </div>
-                <div className="text-gray-600 dark:text-gray-400 font-medium">{stat.label}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Features Section */}
-      <section className="relative z-10 py-24">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-5xl font-extrabold mb-4">
-              <span className="bg-gradient-to-r from-gray-900 to-gray-600 dark:from-white dark:to-gray-400 bg-clip-text text-transparent">
-                Everything You Need
-              </span>
-            </h2>
-            <p className="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-              A comprehensive toolkit designed with privacy and accessibility at its core.
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {features.map((feature, index) => (
-              <div
-                key={index}
-                className="group relative bg-white dark:bg-gray-900 rounded-3xl p-8 border border-gray-100 dark:border-gray-800 
-                           hover:border-transparent transition-all duration-500 hover:shadow-2xl hover:-translate-y-2"
-              >
-                {/* Gradient background on hover */}
-                <div className={`absolute inset-0 bg-gradient-to-br ${feature.gradient} opacity-0 group-hover:opacity-5 rounded-3xl transition-opacity duration-500`} />
-                
-                <div className={`relative w-14 h-14 bg-gradient-to-br ${feature.gradient} rounded-2xl flex items-center justify-center mb-6 shadow-lg ${feature.shadow}`}>
-                  <feature.icon size={28} className="text-white" />
-                </div>
-                <h3 className="relative text-xl font-bold mb-3 text-gray-900 dark:text-white">{feature.title}</h3>
-                <p className="relative text-gray-600 dark:text-gray-400 leading-relaxed">{feature.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Testimonials */}
-      <section className="relative z-10 py-24 bg-gradient-to-br from-primary-50 to-purple-50 dark:from-gray-900 dark:to-gray-900">
-        <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto text-center">
-            <div className="flex justify-center gap-1 mb-6">
-              {[...Array(5)].map((_, i) => (
-                <Star key={i} size={24} className="text-yellow-400 fill-yellow-400" />
-              ))}
-            </div>
-            <blockquote className="text-2xl md:text-3xl font-medium text-gray-900 dark:text-white mb-8 leading-relaxed">
-              "{testimonials[currentTestimonial].text}"
-            </blockquote>
-            <div className="text-gray-600 dark:text-gray-400">
-              <p className="font-semibold">{testimonials[currentTestimonial].author}</p>
-              <p className="text-sm">{testimonials[currentTestimonial].role}</p>
-            </div>
-            
-            {/* Dots */}
-            <div className="flex justify-center gap-2 mt-8">
-              {testimonials.map((_, index) => (
+              <div className="flex items-center gap-2">
                 <button
-                  key={index}
-                  onClick={() => setCurrentTestimonial(index)}
-                  className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                    index === currentTestimonial 
-                      ? 'w-8 bg-primary-500' 
-                      : 'bg-gray-300 dark:bg-gray-600'
-                  }`}
-                />
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
+                  onClick={toggleDarkMode}
+                  className="p-2 rounded-full border border-slate-200 bg-white text-slate-500 hover:text-slate-900 hover:border-slate-300 transition-colors dark:bg-slate-800 dark:border-slate-700 dark:text-slate-400 dark:hover:text-white dark:hover:border-slate-600"
+                >
+                  {darkMode ? <Sun size={18} /> : <Moon size={18} />}
+                </button>
+                <Link
+                  to="/app"
+                  className="hidden sm:inline-flex items-center gap-2 rounded-full bg-primary-600 hover:bg-primary-700 text-white px-5 py-2 text-sm font-semibold shadow-lg shadow-primary-600/20 transition-colors"
+                >
+                  Open App <ArrowRight size={16} />
+                </Link>
+              </div>
+            </nav>
+          </header>
 
-      {/* CTA Section */}
-      <section className="relative z-10 py-24">
-        <div className="container mx-auto px-4">
-          <div className="relative overflow-hidden bg-gradient-to-r from-primary-600 via-purple-600 to-pink-600 rounded-[2.5rem] p-12 md:p-16">
-            {/* Background pattern */}
-            <div className="absolute inset-0 opacity-10">
-              <div className="absolute inset-0" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)', backgroundSize: '32px 32px' }} />
+          <section id="home" className="text-center pb-20 md:pb-28">
+            <div className="inline-flex items-center gap-2 rounded-full bg-white border border-slate-200 px-4 py-2 text-xs uppercase tracking-[0.35em] text-slate-500 shadow-sm dark:bg-slate-800 dark:border-slate-700 dark:text-slate-400">
+              <span className="inline-flex h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
+              Live access | Anonymous | Free
             </div>
-            
-            <div className="relative text-center text-white">
-              <h2 className="text-3xl md:text-5xl font-extrabold mb-6">
-                Start Your Wellness Journey
-              </h2>
-              <p className="text-xl text-white/80 mb-10 max-w-2xl mx-auto">
-                No email, no password, no tracking. Just instant, anonymous access to the support you deserve.
-              </p>
+            <h1 className="mt-10 text-4xl md:text-6xl font-semibold leading-tight text-slate-900 dark:text-white">
+              A calm headquarters for
+              <br className="hidden md:block" />
+              community-powered mental wellness
+            </h1>
+            <p className="mt-6 text-lg md:text-xl text-slate-600 dark:text-slate-300 max-w-3xl mx-auto">
+              OpenMindWell blends moderated peer rooms, guided journaling, habit boards, and crisis tools into a single privacy-first surface so you can seek support with zero friction.
+            </p>
+            <div className="mt-10 flex flex-col gap-3 sm:flex-row sm:justify-center">
               <button
                 onClick={handleGetStarted}
                 disabled={isSigningIn}
-                className="px-10 py-5 bg-white text-primary-600 rounded-2xl text-lg font-bold 
-                           hover:bg-gray-100 transition-all duration-300 shadow-2xl hover:scale-[1.02]
-                           disabled:opacity-70"
+                className="inline-flex items-center justify-center gap-2 rounded-full bg-accent-600 hover:bg-accent-700 text-white px-8 py-3 text-base font-semibold shadow-xl shadow-accent-600/30 disabled:opacity-60 transition-colors"
               >
-                {isSigningIn ? 'Creating...' : 'Begin Now — It\'s Free'}
+                {isSigningIn ? (
+                  <>
+                    <span className="loading-spinner" />
+                    Creating safe space...
+                  </>
+                ) : (
+                  <>
+                    Get Started <ArrowRight size={16} />
+                  </>
+                )}
+              </button>
+              <a
+                href="https://github.com/ZenYukti/OpenMindWell"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-center gap-2 rounded-full border border-slate-300 bg-white/50 px-8 py-3 text-base font-medium text-slate-700 hover:text-slate-900 dark:border-slate-600 dark:bg-slate-800/50 dark:text-slate-300 dark:hover:text-white"
+              >
+                View on GitHub
+              </a>
+            </div>
+            <div className="mt-10 flex flex-wrap justify-center gap-4 text-sm text-slate-600 dark:text-slate-300">
+              <div className="flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 dark:border-slate-700 dark:bg-slate-800">
+                <Lock size={14} /> No login or email
+              </div>
+              <div className="flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 dark:border-slate-700 dark:bg-slate-800">
+                <Heart size={14} /> 100% community-supported
+              </div>
+              <div className="flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 dark:border-slate-700 dark:bg-slate-800">
+                <Shield size={14} /> End-to-end safety guardrails
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+
+      <section className="px-4 md:px-6 -mt-12" id="about">
+        <div className="mx-auto grid max-w-5xl gap-6 rounded-3xl border border-slate-200 bg-white p-6 shadow-2xl shadow-slate-900/5 dark:border-slate-800 dark:bg-slate-900">
+          <div className="grid grid-cols-2 gap-6 md:grid-cols-4">
+            {stats.map(stat => (
+              <div key={stat.label} className="text-center">
+                <p className="text-2xl font-semibold text-slate-900 dark:text-white">{stat.value}</p>
+                <p className="text-sm text-slate-500 dark:text-slate-400">{stat.label}</p>
+              </div>
+            ))}
+          </div>
+          <p className="text-center text-sm text-slate-500 dark:text-slate-400">
+            Built for students, remote teams, and communities that need instant access to mental wellness tooling without compromising anonymity.
+          </p>
+        </div>
+      </section>
+
+      <section id="features" className="py-24" ref={featuresRef}>
+        <div className="mx-auto max-w-6xl px-4 md:px-6">
+          <div className="text-center">
+            <p className="text-xs uppercase tracking-[0.35em] text-slate-500 dark:text-slate-400">Features</p>
+            <h2 className="mt-3 text-3xl md:text-4xl font-semibold text-slate-900 dark:text-white">Tools designed for how you actually feel</h2>
+            <p className="mt-4 text-base text-slate-600 dark:text-slate-400 max-w-3xl mx-auto">
+              Structured rooms, gentle prompts, and visual trackers anchored by a privacy core. Everything works out-of-the-box so your community can simply show up.
+            </p>
+          </div>
+          <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {features.map((feature, index) => {
+              const isLeftColumn = index % 3 === 0
+              const isRightColumn = index % 3 === 2
+              
+              return (
+                <div
+                  key={feature.title}
+                  className={`group relative overflow-hidden rounded-2xl border border-slate-200 bg-white/80 shadow-lg shadow-slate-900/5 transition-all duration-700 hover:-translate-y-1 hover:border-slate-300 dark:border-slate-800 dark:bg-slate-900/80 min-h-[280px] ${
+                    featuresVisible
+                      ? 'opacity-100 translate-x-0 translate-y-0'
+                      : `opacity-0 ${
+                          isLeftColumn
+                            ? 'translate-x-32 -translate-y-8'
+                            : isRightColumn
+                            ? '-translate-x-32 -translate-y-8'
+                            : '-translate-y-16'
+                        }`
+                  }`}
+                  style={{
+                    transitionDelay: `${index * 100}ms`,
+                  }}
+                >
+                  {/* Image Background */}
+                  <div className="absolute inset-0 transition-transform duration-500 group-hover:scale-110">
+                    <img 
+                      src={feature.image} 
+                      alt={feature.title}
+                      className="h-full w-full object-cover"
+                    />
+                    <div className="absolute inset-0 bg-slate-900/70 dark:bg-slate-950/80" />
+                  </div>
+
+                  {/* Content - Hidden by default, shown on hover */}
+                  <div className="relative z-10 p-6 h-full flex flex-col justify-end">
+                    <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-accent-500 text-white shadow-lg">
+                      <feature.icon size={22} />
+                    </div>
+                    
+                    <div className="transform transition-all duration-300 group-hover:translate-y-0 translate-y-2">
+                      <h3 className="text-lg font-semibold text-white">{feature.title}</h3>
+                      <p className="mt-2 text-sm text-white/90 opacity-0 max-h-0 overflow-hidden transition-all duration-300 group-hover:opacity-100 group-hover:max-h-20">
+                        {feature.desc}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+        </div>
+      </section>
+
+      <section id="resources" className="py-24 bg-white dark:bg-slate-950">
+        <div className="mx-auto max-w-6xl px-4 md:px-6">
+          <div className="grid gap-10 lg:grid-cols-2">
+            <div>
+              <p className="text-xs uppercase tracking-[0.35em] text-slate-500 dark:text-white/60">Resources</p>
+              <h2 className="mt-3 text-3xl md:text-4xl font-semibold text-slate-900 dark:text-white">Reach out or go inward without friction</h2>
+              <p className="mt-4 text-slate-600 dark:text-white/70">
+                Crisis-ready content, guided rituals, and open data policies live side-by-side. Copy the playbook, self-host it, or point your community straight to the hosted edition.
+              </p>
+              <div className="mt-10 grid gap-4">
+                {resourceHighlights.map(resource => (
+                  <div key={resource.title} className="rounded-2xl border border-slate-200 bg-slate-50 p-5 dark:border-white/10 dark:bg-white/5">
+                    <p className="text-xs font-semibold uppercase tracking-[0.35em] text-slate-500 dark:text-white/60">{resource.tag}</p>
+                    <h3 className="mt-3 text-xl font-semibold text-slate-900 dark:text-white">{resource.title}</h3>
+                    <p className="mt-2 text-sm text-slate-600 dark:text-white/70">{resource.desc}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="rounded-3xl border border-slate-200 bg-white p-8 shadow-2xl shadow-slate-900/10 dark:border-white/10 dark:bg-white/5 dark:shadow-blue-900/30">
+              <p className="text-sm uppercase tracking-[0.35em] text-slate-500 dark:text-white/60">Crisis Kit</p>
+              <h3 className="mt-4 text-3xl font-semibold text-slate-900 dark:text-white">Always-on crisis coverage</h3>
+              <p className="mt-3 text-slate-600 dark:text-white/70">
+                Tap the crisis modal anywhere inside the app to surface helplines across 190+ countries, calming exercises, and escalation guidance curated with licensed professionals.
+              </p>
+              <ul className="mt-6 space-y-3 text-sm text-slate-600 dark:text-white/75">
+                <li className="flex items-center gap-2"><span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />Geo-aware hotlines</li>
+                <li className="flex items-center gap-2"><span className="h-1.5 w-1.5 rounded-full bg-sky-400" />Copy-ready safety plan template</li>
+                <li className="flex items-center gap-2"><span className="h-1.5 w-1.5 rounded-full bg-purple-400" />Night-mode breathing sequences</li>
+              </ul>
+              <button
+                onClick={handleGetStarted}
+                disabled={isSigningIn}
+                className="mt-8 inline-flex w-full items-center justify-center rounded-2xl bg-primary-600 hover:bg-primary-700 py-3 text-base font-semibold text-white shadow-xl shadow-primary-600/40 disabled:opacity-60 transition-colors"
+              >
+                {isSigningIn ? 'Preparing your space...' : 'Launch Anonymous Session'}
               </button>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="relative z-10 border-t border-gray-200 dark:border-gray-800">
-        <div className="container mx-auto px-4 py-12">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-primary-500 to-primary-600 rounded-xl flex items-center justify-center">
-                <Brain className="text-white" size={24} />
-              </div>
-              <span className="font-bold text-gray-900 dark:text-white">OpenMindWell</span>
-            </div>
-            <p className="text-gray-500 text-center">
-              Built with 💚 for mental health awareness. Open source and free forever.
+      <section id="contact" className="py-24">
+        <div className="mx-auto max-w-5xl px-4 md:px-6">
+          <div className="rounded-3xl border border-slate-200 bg-white p-10 text-center shadow-2xl shadow-slate-900/5 dark:border-slate-800 dark:bg-slate-900">
+            <p className="text-xs uppercase tracking-[0.35em] text-slate-500 dark:text-slate-400">Stay In The Loop</p>
+            <h2 className="mt-4 text-3xl font-semibold">Bring OpenMindWell to your cohort</h2>
+            <p className="mt-3 text-base text-slate-600 dark:text-slate-300">
+              Spin up a community space in minutes or talk with us about custom integrations and on-prem deployments.
             </p>
-            <div className="flex gap-6 text-sm text-gray-500">
-              <a href="#" className="hover:text-primary-600 transition">Privacy</a>
-              <a href="#" className="hover:text-primary-600 transition">Terms</a>
-              <a href="#" className="hover:text-primary-600 transition">Resources</a>
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center">
+              <button
+                onClick={handleGetStarted}
+                disabled={isSigningIn}
+                className="inline-flex items-center justify-center rounded-full bg-accent-600 hover:bg-accent-700 px-8 py-3 text-base font-semibold text-white shadow-lg shadow-accent-600/30 disabled:opacity-60 transition-colors"
+              >
+                {isSigningIn ? 'Creating...' : 'Enter the App'}
+              </button>
+              <a
+                href="mailto:hello@openmindwell.app"
+                className="inline-flex items-center justify-center rounded-full border border-slate-300 px-8 py-3 text-base font-medium text-slate-900 hover:border-slate-400 dark:border-slate-700 dark:text-white"
+              >
+                Contact the team
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="border-t border-slate-800 bg-slate-900">
+        <div className="container mx-auto px-4 md:px-6 py-16">
+          <div className="grid gap-12 md:grid-cols-2 lg:grid-cols-4">
+            {/* Brand */}
+            <div className="lg:col-span-1">
+              <div className="flex items-center gap-3 mb-4">
+                <img src="/logo.png" alt="OpenMindWell Logo" className="h-10 w-10 rounded-2xl object-contain" />
+                <div>
+                  <p className="text-xs uppercase tracking-[0.3em] text-slate-400">OpenMind</p>
+                  <p className="text-base font-semibold text-white">OpenMindWell</p>
+                </div>
+              </div>
+              <p className="text-sm text-slate-400 leading-relaxed">
+                Privacy-first mental wellness platform. Anonymous, free, and built with care for communities that need safe spaces.
+              </p>
+              <div className="mt-4 flex gap-3">
+                <a href="https://github.com/ZenYukti/OpenMindWell" target="_blank" rel="noopener noreferrer" className="p-2 rounded-lg border border-slate-700 bg-slate-800 hover:border-slate-600 transition-colors">
+                  <svg className="w-5 h-5 text-slate-400" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+                </a>
+                <a href="https://twitter.com/openmindwell" target="_blank" rel="noopener noreferrer" className="p-2 rounded-lg border border-slate-700 bg-slate-800 hover:border-slate-600 transition-colors">
+                  <svg className="w-5 h-5 text-slate-400" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                </a>
+              </div>
+            </div>
+
+            {/* Product */}
+            <div>
+              <h3 className="text-sm font-semibold uppercase tracking-wider text-white mb-4">Product</h3>
+              <ul className="space-y-3 text-sm">
+                <li><a href="#features" className="text-slate-400 hover:text-white transition-colors">Features</a></li>
+                <li><a href="#resources" className="text-slate-400 hover:text-white transition-colors">Resources</a></li>
+                <li><a href="/app" className="text-slate-400 hover:text-white transition-colors">Launch App</a></li>
+                <li><a href="https://github.com/ZenYukti/OpenMindWell#roadmap" target="_blank" rel="noopener noreferrer" className="text-slate-400 hover:text-white transition-colors">Roadmap</a></li>
+              </ul>
+            </div>
+
+            {/* Company */}
+            <div>
+              <h3 className="text-sm font-semibold uppercase tracking-wider text-white mb-4">Company</h3>
+              <ul className="space-y-3 text-sm">
+                <li><a href="#about" className="text-slate-400 hover:text-white transition-colors">About</a></li>
+                <li><a href="https://github.com/ZenYukti/OpenMindWell" target="_blank" rel="noopener noreferrer" className="text-slate-400 hover:text-white transition-colors">Open Source</a></li>
+                <li><a href="#contact" className="text-slate-400 hover:text-white transition-colors">Contact</a></li>
+                <li><a href="mailto:hello@openmindwell.app" className="text-slate-400 hover:text-white transition-colors">Support</a></li>
+              </ul>
+            </div>
+
+            {/* Legal */}
+            <div>
+              <h3 className="text-sm font-semibold uppercase tracking-wider text-white mb-4">Legal</h3>
+              <ul className="space-y-3 text-sm">
+                <li><a href="#" className="text-slate-400 hover:text-white transition-colors">Privacy Policy</a></li>
+                <li><a href="#" className="text-slate-400 hover:text-white transition-colors">Terms of Service</a></li>
+                <li><a href="#" className="text-slate-400 hover:text-white transition-colors">Cookie Policy</a></li>
+                <li><a href="https://github.com/ZenYukti/OpenMindWell/blob/main/LICENSE" target="_blank" rel="noopener noreferrer" className="text-slate-400 hover:text-white transition-colors">License</a></li>
+              </ul>
+            </div>
+          </div>
+
+          <div className="mt-12 pt-8 border-t border-slate-800">
+            <div className="flex flex-col items-center gap-4 md:flex-row md:justify-between">
+              <p className="text-sm text-slate-400 text-center md:text-left">
+                © {new Date().getFullYear()} OpenMindWell. Open source and free forever. Built with <Heart className="inline h-4 w-4 text-red-500" /> for mental wellness.
+              </p>
+              <div className="flex items-center gap-2 text-xs text-slate-400">
+                <Lock size={12} />
+                <span>Zero tracking · Full anonymity</span>
+              </div>
             </div>
           </div>
         </div>
       </footer>
-
-      {/* CSS for blob animation */}
-      <style>{`
-        @keyframes blob {
-          0%, 100% { transform: translate(0, 0) scale(1); }
-          25% { transform: translate(20px, -30px) scale(1.1); }
-          50% { transform: translate(-20px, 20px) scale(0.9); }
-          75% { transform: translate(30px, 30px) scale(1.05); }
-        }
-        .animate-blob {
-          animation: blob 8s ease-in-out infinite;
-        }
-        .animation-delay-2000 {
-          animation-delay: 2s;
-        }
-        .animation-delay-4000 {
-          animation-delay: 4s;
-        }
-      `}</style>
     </div>
   )
 }

@@ -109,7 +109,7 @@ export default function Habits() {
       </div>
 
       {/* Progress Card */}
-      <div className="bg-gradient-to-r from-green-500 to-emerald-600 rounded-xl md:rounded-2xl p-4 md:p-6 text-white">
+      <div className="bg-accent-600 rounded-xl md:rounded-2xl p-4 md:p-6 text-white">
         <div className="flex items-center justify-between mb-3 md:mb-4">
           <div>
             <h2 className="text-sm md:text-lg font-semibold flex items-center gap-2">

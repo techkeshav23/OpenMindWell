@@ -2,6 +2,7 @@ import { Routes, Route } from 'react-router-dom'
 import { Toaster } from 'react-hot-toast'
 import { useEffect } from 'react'
 import { useAuthStore } from './store/authStore'
+import { useUIStore } from './store/uiStore'
 import { supabase } from './lib/supabase'
 
 // Pages
@@ -19,6 +20,7 @@ import DashboardLayout from './components/layout/DashboardLayout'
 
 function App() {
   const { setUser, setLoading } = useAuthStore()
+  const { darkMode } = useUIStore()
 
   useEffect(() => {
     // Check for existing session
@@ -34,6 +36,15 @@ function App() {
 
     return () => subscription.unsubscribe()
   }, [setUser, setLoading])
+
+  useEffect(() => {
+    // Apply dark mode class to document
+    if (darkMode) {
+      document.documentElement.classList.add('dark')
+    } else {
+      document.documentElement.classList.remove('dark')
+    }
+  }, [darkMode])
 
   return (
     <>

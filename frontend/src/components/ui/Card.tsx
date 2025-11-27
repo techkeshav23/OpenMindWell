@@ -33,8 +33,7 @@ const Card = forwardRef<HTMLDivElement, CardProps>(
         glass
       `,
       gradient: `
-        bg-gradient-to-br from-white via-gray-50 to-gray-100
-        dark:from-gray-800 dark:via-gray-850 dark:to-gray-900
+        bg-white dark:bg-gray-800
         border border-gray-100 dark:border-gray-700
         shadow-sm
       `,

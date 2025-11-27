@@ -84,7 +84,7 @@ export default function Mood() {
       </div>
 
       {/* Today's Mood Card */}
-      <div className="bg-gradient-to-r from-orange-500 to-amber-500 rounded-xl md:rounded-2xl p-4 md:p-6 text-white">
+      <div className="bg-orange-600 rounded-xl md:rounded-2xl p-4 md:p-6 text-white">
         <h2 className="font-semibold mb-2 text-sm md:text-base">How are you feeling today?</h2>
         {todayEntry ? (
           <div className="flex items-center gap-3 md:gap-4">

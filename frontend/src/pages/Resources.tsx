@@ -234,8 +234,8 @@ export default function Resources() {
       )}
 
       {/* Additional Help Section */}
-      <div className="bg-gradient-to-r from-teal-50 to-cyan-50 dark:from-teal-900/20 dark:to-cyan-900/20 
-                      rounded-lg sm:rounded-2xl p-3 sm:p-6 border border-teal-100 dark:border-teal-800">
+      <div className="bg-primary-50 dark:bg-primary-900/20 
+                      rounded-lg sm:rounded-2xl p-3 sm:p-6 border border-primary-100 dark:border-primary-800">
         <h2 className="text-sm sm:text-lg font-semibold mb-2 flex items-center gap-2">
           <Globe className="text-teal-600 flex-shrink-0" size={16} /> Find Local Support
         </h2>

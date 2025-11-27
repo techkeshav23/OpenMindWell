@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -6,7 +6,7 @@
 
 @layer base {
   * {
-    @apply border-gray-200 dark:border-gray-700;
+    @apply border-slate-200 dark:border-slate-800;
   }
   
   html {
@@ -14,141 +14,86 @@
   }
   
   body {
-    @apply bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 font-sans antialiased;
+    @apply bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 antialiased;
     font-family: 'Inter', system-ui, -apple-system, sans-serif;
   }
 }
 
 @layer components {
-  /* Modern Buttons */
+  /* Sleek Buttons */
   .btn {
-    @apply inline-flex items-center justify-center rounded-xl font-semibold transition-all duration-300
-           focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed
-           transform hover:scale-[1.02] active:scale-[0.98];
+    @apply inline-flex items-center justify-center font-medium transition-all duration-150
+           focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed;
   }
   
   .btn-primary {
-    @apply btn bg-gradient-to-r from-primary-500 to-primary-600 text-white 
-           hover:from-primary-600 hover:to-primary-700 focus:ring-primary-500
-           shadow-lg shadow-primary-500/25 hover:shadow-xl hover:shadow-primary-500/30;
+    @apply btn bg-slate-900 dark:bg-white text-white dark:text-slate-900
+           hover:bg-slate-800 dark:hover:bg-slate-100 focus:ring-slate-500 rounded-lg;
   }
   
   .btn-secondary {
-    @apply btn bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100
-           hover:bg-gray-50 dark:hover:bg-gray-700 focus:ring-gray-500
-           border border-gray-200 dark:border-gray-700 shadow-sm;
+    @apply btn bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100
+           hover:bg-slate-50 dark:hover:bg-slate-800 focus:ring-slate-400
+           border border-slate-200 dark:border-slate-700 rounded-lg;
   }
   
   .btn-ghost {
-    @apply btn bg-transparent hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300;
+    @apply btn bg-transparent hover:bg-slate-100 dark:hover:bg-slate-800 
+           text-slate-600 dark:text-slate-400 rounded-lg;
   }
   
   .btn-danger {
-    @apply btn bg-gradient-to-r from-red-500 to-red-600 text-white 
-           hover:from-red-600 hover:to-red-700 focus:ring-red-500
-           shadow-lg shadow-red-500/25;
+    @apply btn bg-red-600 text-white hover:bg-red-700 focus:ring-red-500 rounded-lg;
+  }
+  
+  .btn-accent {
+    @apply btn bg-accent-600 text-white hover:bg-accent-700 focus:ring-accent-500 rounded-lg;
   }
   
   .btn-sm {
-    @apply px-3 py-1.5 text-sm rounded-lg;
+    @apply px-3 py-1.5 text-sm;
   }
   
   .btn-md {
-    @apply px-5 py-2.5 text-base;
+    @apply px-4 py-2 text-sm;
   }
   
   .btn-lg {
-    @apply px-8 py-3.5 text-lg;
+    @apply px-6 py-2.5 text-base;
   }
   
-  /* Glass Morphism Cards */
+  /* Clean Cards */
   .card {
-    @apply bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl rounded-2xl 
-           border border-gray-200/50 dark:border-gray-800/50 
-           shadow-xl shadow-gray-900/5 dark:shadow-gray-900/30;
+    @apply bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-800;
   }
   
   .card-hover {
-    @apply card transition-all duration-300 hover:shadow-2xl hover:shadow-gray-900/10 
-           dark:hover:shadow-gray-900/40 hover:-translate-y-1;
+    @apply card transition-all duration-150 hover:border-slate-300 dark:hover:border-slate-700;
   }
   
-  /* Modern Inputs */
+  /* Minimal Inputs */
   .input {
-    @apply w-full rounded-xl border border-gray-200 dark:border-gray-700 
-           bg-white dark:bg-gray-900 px-4 py-3 text-gray-900 dark:text-gray-100
-           placeholder-gray-400 dark:placeholder-gray-500
-           focus:outline-none focus:ring-2 focus:ring-primary-500/50 focus:border-primary-500
-           transition-all duration-200;
-  }
-  
-  .input-group {
-    @apply relative;
-  }
-  
-  .input-icon {
-    @apply absolute left-3 top-1/2 -translate-y-1/2 text-gray-400;
+    @apply w-full rounded-lg border border-slate-200 dark:border-slate-700 
+           bg-white dark:bg-slate-900 px-3 py-2 text-sm text-slate-900 dark:text-slate-100
+           placeholder-slate-400 dark:placeholder-slate-500
+           focus:outline-none focus:ring-2 focus:ring-accent-500/20 focus:border-accent-500
+           transition-colors duration-150;
   }
   
   .label {
-    @apply block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2;
+    @apply block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5;
   }
-  
-  /* Gradient Text */
-  .gradient-text {
-    @apply bg-gradient-to-r from-primary-500 via-purple-500 to-pink-500 bg-clip-text text-transparent;
-  }
-  
-  /* Animated Background */
-  .animated-bg {
-    background: linear-gradient(-45deg, #10b981, #3b82f6, #8b5cf6, #ec4899);
-    background-size: 400% 400%;
-    animation: gradient 15s ease infinite;
-  }
-  
-  @keyframes gradient {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
-  }
-  
-  /* Floating Animation */
-  .float {
-    animation: float 6s ease-in-out infinite;
-  }
-  
-  @keyframes float {
-    0%, 100% { transform: translateY(0px); }
-    50% { transform: translateY(-20px); }
-  }
-  
-  /* Pulse Glow */
-  .pulse-glow {
-    animation: pulse-glow 2s ease-in-out infinite;
-  }
-  
-  @keyframes pulse-glow {
-    0%, 100% { box-shadow: 0 0 20px rgba(16, 185, 129, 0.3); }
-    50% { box-shadow: 0 0 40px rgba(16, 185, 129, 0.6); }
-  }
-  
-  /* Shimmer Effect */
-  .shimmer {
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
-    background-size: 200% 100%;
-    animation: shimmer 2s infinite;
-  }
-  
-  @keyframes shimmer {
-    0% { background-position: -200% 0; }
-    100% { background-position: 200% 0; }
+
+  /* Accent text for highlights */
+  .text-accent {
+    @apply text-accent-600 dark:text-accent-400;
   }
 }
 
-/* Custom scrollbar */
+/* Clean scrollbar */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
 }
 
 ::-webkit-scrollbar-track {
@@ -156,50 +101,74 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(to bottom, #d1d5db, #9ca3af);
-  border-radius: 4px;
+  background: #cbd5e1;
+  border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(to bottom, #9ca3af, #6b7280);
+  background: #94a3b8;
 }
 
 .dark ::-webkit-scrollbar-thumb {
-  background: linear-gradient(to bottom, #374151, #4b5563);
+  background: #334155;
 }
 
 .dark ::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(to bottom, #4b5563, #6b7280);
+  background: #475569;
 }
 
-/* Chat bubbles */
+/* Chat bubbles - sleek style */
 .chat-bubble {
-  @apply relative rounded-2xl px-4 py-2 max-w-[80%];
+  @apply relative rounded-lg px-3 py-2 max-w-[80%];
 }
 
 .chat-bubble-self {
-  @apply chat-bubble bg-primary-500 text-white rounded-br-sm;
+  @apply chat-bubble bg-accent-600 text-white;
 }
 
 .chat-bubble-other {
-  @apply chat-bubble bg-gray-100 dark:bg-gray-800 rounded-bl-sm;
+  @apply chat-bubble bg-slate-100 dark:bg-slate-800;
 }
 
-/* Crisis button animation */
-@keyframes crisis-pulse {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
-  50% { box-shadow: 0 0 0 8px rgba(239, 68, 68, 0); }
-}
-
+/* Subtle crisis button */
 .crisis-pulse {
-  animation: crisis-pulse 2s infinite;
+  @apply animate-pulse;
 }
 
 .scrollbar-hide::-webkit-scrollbar {
-    display: none;
+  display: none;
 }
 
 .scrollbar-hide {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Landing hero visuals */
+.hero-shell {
+  background: transparent;
+}
+
+.hero-glow {
+  display: none;
+}
+
+.loading-spinner {
+  width: 1rem;
+  height: 1rem;
+  border-radius: 9999px;
+  border: 2px solid rgba(99, 102, 241, 0.25);
+  border-top-color: #6366f1;
+  animation: spin 0.7s linear infinite;
+}
+
+.dark .loading-spinner {
+  border-color: rgba(248, 250, 252, 0.2);
+  border-top-color: #fff;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
