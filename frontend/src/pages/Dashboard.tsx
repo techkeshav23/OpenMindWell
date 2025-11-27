@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { 
-  MessageCircle, BookOpen, Target, Brain, TrendingUp, 
+  MessageCircle, BookOpen, Target, TrendingUp, 
   Calendar, ArrowRight, Plus, CheckCircle2, Flame
 } from 'lucide-react'
 import { useAuthStore } from '@/store/authStore'
@@ -143,7 +143,7 @@ export default function Dashboard() {
         <StatCard icon={BookOpen} label="Journal Entries" value={stats.journalCount} />
         <StatCard icon={MessageCircle} label="Chat Rooms" value={stats.chatRooms} />
         <StatCard icon={Flame} label="Day Streak" value={stats.streakDays} suffix="" />
-        <StatCard icon={Brain} label="Avg Mood" value={stats.moodAvg || '-'} />
+        <StatCard icon={TrendingUp} label="Avg Mood" value={stats.moodAvg || '-'} />
       </div>
 
       {/* Main Content Grid */}
@@ -215,7 +215,7 @@ export default function Dashboard() {
 
           {recentMoods.length === 0 ? (
             <div className="text-center py-8">
-              <Brain className="w-8 h-8 text-slate-300 mx-auto mb-3" />
+              <TrendingUp className="w-8 h-8 text-slate-300 mx-auto mb-3" />
               <p className="text-sm text-slate-500 mb-3">No mood entries yet</p>
               <Link
                 to="/app/mood"

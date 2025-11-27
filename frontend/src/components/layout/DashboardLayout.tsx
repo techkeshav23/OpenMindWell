@@ -1,7 +1,7 @@
 import { Outlet, NavLink, useNavigate } from 'react-router-dom'
 import { useState, useEffect } from 'react'
 import {
-  Brain, MessageCircle, BookOpen, Target, TrendingUp, Zap,
+  MessageCircle, BookOpen, Target, TrendingUp, Zap,
   Menu, X, Moon, Sun, LogOut, Phone, Home
 } from 'lucide-react'
 import { useAuthStore } from '../../store/authStore'

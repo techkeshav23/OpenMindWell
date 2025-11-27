@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { 
-  Brain, Plus, Calendar, TrendingUp, ChevronLeft, ChevronRight,
+  Plus, Calendar, TrendingUp, ChevronLeft, ChevronRight,
   Zap, Heart, Activity
 } from 'lucide-react'
 import { supabase } from '@/lib/supabase'
@@ -71,7 +71,7 @@ export default function Mood() {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 md:gap-4">
         <div>
           <h1 className="text-xl md:text-2xl font-bold flex items-center gap-2">
-            <Brain className="text-orange-500 w-5 h-5 md:w-6 md:h-6" /> Mood Tracker
+            <TrendingUp className="text-orange-500 w-5 h-5 md:w-6 md:h-6" /> Mood Tracker
           </h1>
           <p className="text-gray-500 mt-1 text-sm md:text-base">Understand your emotional patterns</p>
         </div>
@@ -158,7 +158,7 @@ export default function Mood() {
         </div>
       ) : entries.length === 0 ? (
         <div className="text-center py-12 bg-white dark:bg-gray-800 rounded-2xl">
-          <Brain className="mx-auto text-gray-400 mb-4" size={48} />
+          <TrendingUp className="mx-auto text-gray-400 mb-4" size={48} />
           <h3 className="text-lg font-semibold text-gray-600 dark:text-gray-400">No mood entries</h3>
           <p className="text-gray-500 mt-1">Start tracking to see your patterns</p>
         </div>
